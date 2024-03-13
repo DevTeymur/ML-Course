@@ -80,9 +80,9 @@ data_mtx, targets = make_dataset(n_instances, fraction_of_outliers, n_informativ
 # Question 2 functions
 def rebalance(X, y):
     unique_values, class_count = np.unique(y, return_counts=True)
-    print(f'Number of distinct classes: {len(class_count)}, {unique_values}')
+    # print(f'Number of distinct classes: {len(class_count)}, {unique_values}')
     max_amount_of_class = np.max(class_count)
-    print(f'Maximum amount of class: {max_amount_of_class}')
+    # print(f'Maximum amount of class: {max_amount_of_class}')
 
     x_new, y_new = [], []
 
@@ -93,7 +93,7 @@ def rebalance(X, y):
         x_new.extend(X[oversampled_version])        
         y_new.extend(y[oversampled_version])
 
-    print(f'New data: {len(x_new)}, {len(y_new)}')
+    # print(f'New data: {len(x_new)}, {len(y_new)}')
     return np.array(x_new), np.array(y_new)        
 
 def rebalanced_stratified_split(X_orig, y_orig, test_size=0.2, random_state=None):
@@ -105,9 +105,9 @@ def rebalanced_stratified_split(X_orig, y_orig, test_size=0.2, random_state=None
     # Initialization of the random state
     np.random.seed(random_state)
     unique_values, class_count = np.unique(y_rb, return_counts=True)
-    print(class_count)
+    # print(class_count)
     class_test_sizes = np.round(class_count * test_size).astype(int)
-    print(f'Class test size: {class_test_sizes}')
+    # print(f'Class test size: {class_test_sizes}')
 
     for class_label, test_size in zip(unique_values, class_test_sizes):
         class_indices = np.where(y_rb == class_label)[0]
@@ -115,7 +115,7 @@ def rebalanced_stratified_split(X_orig, y_orig, test_size=0.2, random_state=None
         
         test_indices = class_indices[:test_size]
         train_indices = class_indices[test_size:]
-        print(f'Class: {class_label}, test: {len(test_indices)}, train: {len(train_indices)}')
+        # print(f'Class: {class_label}, test: {len(test_indices)}, train: {len(train_indices)}')
 
         X_train.extend(x_rb[train_indices])
         X_test.extend(x_rb[test_indices])
@@ -138,8 +138,7 @@ def confusion_matrix(y_true, y_pred):
     unique_values = np.unique(y_true)
     num_of_values = len(unique_values)
     conf_matrix = np.zeros((num_of_values, num_of_values)) 
-    print(conf_matrix)
-    return conf_matrix
+    # print(conf_matrix)
 
     for true_label, pred_label in zip(y_true, y_pred):
         true_index = np.where(unique_values == true_label)[0][0]
@@ -155,8 +154,8 @@ def predictive_performance_estimate(classifier, data_mtx, targets, test_size, n_
         classifier.fit(X_train, y_train)
         y_pred = classifier.predict(X_test)
         acc = accuracy_score(y_test, y_pred)
-        print(f'Accuracy for repetition {rep}: {acc*100}%')
-        print(confusion_matrix(y_test, y_pred))
+        # print(f'Accuracy for repetition {rep}: {acc*100}%')
+        # print(confusion_matrix(y_test, y_pred))
         acc_scores.append(acc)
     return np.mean(acc_scores), np.std(acc_scores)
 
@@ -210,7 +209,8 @@ class KNNClassifier:
     
     def predict(self, X):
         predictions = [self.predict_prob_single(x) for x in X]
-        return np.argmax(predictions, axis=1)
+        predictions = [np.argmax(probabilites) for probabilites in predictions]
+        return np.array(predictions)
 
 # Question 6 functions
 class CostSensitiveKNNClassifier:
@@ -370,7 +370,10 @@ def plot_predictive_error_estimate_vs_param(make_dataset_func, classifier, param
     acc_stds = []
     for param in params:
         data_mtx, targets = make_dataset_func(param)
+        # print(f'Data matrix and targets generated successfully')
+        # print(f'Data matrix shape: {data_mtx.shape}, targets shape: {targets.shape}')   
         mean_acc, std_acc = predictive_performance_estimate(classifier, data_mtx, targets, test_size=.3, n_rep=n_rep)
+        print(f'Param: {param}, mean accuracy: {mean_acc}, std accuracy: {std_acc}')
         acc_means.append(mean_acc)
         acc_stds.append(std_acc)
     acc_means = np.array(acc_means)
@@ -384,13 +387,28 @@ def plot_predictive_error_estimate_vs_param(make_dataset_func, classifier, param
     plt.grid()
     plt.title(title)
     plt.show()
-# _________________________________________________________________________________________
-params = np.arange(0, 150, 25)
 
-classifier = KNNClassifier(k=3)
-plot_predictive_error_estimate_vs_param(make_dataset_n_features_outliers, classifier, params, n_rep=30, title='KNN model performance decreases', xlabel='n_non_informative_features')
+
+import time
+start_time = time.time()
+
+# params = np.arange(0, 150, 25)
+
+# classifier = KNNClassifier(k=3)
+# plot_predictive_error_estimate_vs_param(make_dataset_n_features_outliers, classifier, params, n_rep=30, title='KNN model performance decreases', xlabel='n_non_informative_features')
+
+
+# classifier = AutoGroupsKNNClassifier(k=3,param=.5,weight=.1)
+# plot_predictive_error_estimate_vs_param(make_dataset_n_features_outliers, classifier, params, n_rep=30, title='AutoGroupsKNN model performance does not decrease', xlabel='n_non_informative_features')
+
+
+params = np.arange(2,20,4)
+
+# classifier = LinearClassifier()
+# plot_predictive_error_estimate_vs_param(make_dataset_outliers_std, classifier, params, n_rep=30, title='Linear model performance decreases', xlabel='outliers_std')
 
 classifier = AutoGroupsKNNClassifier(k=3,param=.5,weight=.1)
-plot_predictive_error_estimate_vs_param(make_dataset_n_features_outliers, classifier, params, n_rep=30, title='AutoGroupsKNN model performance does not decrease', xlabel='n_non_informative_features')
+plot_predictive_error_estimate_vs_param(make_dataset_outliers_std, classifier, params, n_rep=5, title='AutoGroupsKNN model performance does not decrease', xlabel='outliers_std')
+print("Execution time:", round(time.time() - start_time, 2), "seconds")
 
 save_history()
