@@ -26,11 +26,13 @@ def make_positive_data(n_instances, fraction_of_outliers, n_informative_features
                                     np.hstack((informative_outliers, non_informative_outliers))))
     return positive_data
 
+
 def make_negative_data(n_instances, n_informative_features, n_non_informative_features, std):
     informative = np.random.normal(-1, std, (n_instances, n_informative_features))
     non_informative = np.random.normal(0, std, (n_instances, n_non_informative_features))
     negative_data = np.hstack((informative, non_informative))
     return negative_data
+
 
 def make_dataset(n_instances, fraction_of_outliers, n_informative_features, n_non_informative_features, std, outliers_std):
     half_instances = n_instances // 2
@@ -39,6 +41,7 @@ def make_dataset(n_instances, fraction_of_outliers, n_informative_features, n_no
     data_mtx = np.vstack((positive_data, negative_data))
     targets = np.hstack((np.ones(half_instances), np.zeros(half_instances)))
     return data_mtx, targets
+
 
 def plot2d(data_mtx, targets=None, title='', size=8):
     plt.figure(figsize=(size, size))
@@ -49,6 +52,7 @@ def plot2d(data_mtx, targets=None, title='', size=8):
         plt.scatter(data_mtx[:, 0], data_mtx[:, 1], c=targets, cmap='viridis')
     plt.title(title)
     plt.show()  
+
 
 def plot3d(data_mtx, targets=None, title='', size=8):
     fig = plt.figure(figsize=(size, size))
@@ -63,19 +67,6 @@ def plot3d(data_mtx, targets=None, title='', size=8):
     ax.set_zlabel('Column 3')
     plt.show()
 
-
-# Just run the following code, do not modify it
-n_instances = 1000
-fraction_of_outliers = 0.3
-n_informative_features = 1
-n_non_informative_features = 2
-std = 0.5
-outliers_std = .5  # 5 
-
-data_mtx, targets = make_dataset(n_instances, fraction_of_outliers, n_informative_features, n_non_informative_features, std, 2)
-
-# plot2d(data_mtx, targets, title='Data 2D', size=8)
-# plot3d(data_mtx, 
 
 # Question 2 functions
 def rebalance(X, y):
@@ -154,8 +145,6 @@ def predictive_performance_estimate(classifier, data_mtx, targets, test_size, n_
         classifier.fit(X_train, y_train)
         y_pred = classifier.predict(X_test)
         acc = accuracy_score(y_test, y_pred)
-        # print(f'Accuracy for repetition {rep}: {acc*100}%')
-        # print(confusion_matrix(y_test, y_pred))
         acc_scores.append(acc)
     return np.mean(acc_scores), np.std(acc_scores)
 
@@ -172,7 +161,7 @@ class LinearClassifier:
         # Initialize weights if not provided
         if self.weights is None:
             self.weights = np.zeros(X_with_bias.shape[1])
-        # Fit the model using the normal equation
+        # @ dot product, T transpose, inv() inverse
         self.weights = np.linalg.inv(X_with_bias.T @ X_with_bias) @ X_with_bias.T @ y
     
     def predict(self, X):
@@ -392,23 +381,23 @@ def plot_predictive_error_estimate_vs_param(make_dataset_func, classifier, param
 import time
 start_time = time.time()
 
-# params = np.arange(0, 150, 25)
+params = np.arange(0, 150, 25)
 
-# classifier = KNNClassifier(k=3)
-# plot_predictive_error_estimate_vs_param(make_dataset_n_features_outliers, classifier, params, n_rep=30, title='KNN model performance decreases', xlabel='n_non_informative_features')
+classifier = KNNClassifier(k=3)
+plot_predictive_error_estimate_vs_param(make_dataset_n_features_outliers, classifier, params, n_rep=30, title='KNN model performance decreases', xlabel='n_non_informative_features')
 
 
 # classifier = AutoGroupsKNNClassifier(k=3,param=.5,weight=.1)
 # plot_predictive_error_estimate_vs_param(make_dataset_n_features_outliers, classifier, params, n_rep=30, title='AutoGroupsKNN model performance does not decrease', xlabel='n_non_informative_features')
 
 
-params = np.arange(2,20,4)
+# params = np.arange(2,20,4)
 
 # classifier = LinearClassifier()
 # plot_predictive_error_estimate_vs_param(make_dataset_outliers_std, classifier, params, n_rep=30, title='Linear model performance decreases', xlabel='outliers_std')
 
-classifier = AutoGroupsKNNClassifier(k=3,param=.5,weight=.1)
-plot_predictive_error_estimate_vs_param(make_dataset_outliers_std, classifier, params, n_rep=5, title='AutoGroupsKNN model performance does not decrease', xlabel='outliers_std')
-print("Execution time:", round(time.time() - start_time, 2), "seconds")
+# classifier = AutoGroupsKNNClassifier(k=3,param=.5,weight=.1)
+# plot_predictive_error_estimate_vs_param(make_dataset_outliers_std, classifier, params, n_rep=5, title='AutoGroupsKNN model performance does not decrease', xlabel='outliers_std')
+# print("Execution time:", round(time.time() - start_time, 2), "seconds")
 
 save_history()
