@@ -2,9 +2,12 @@ Clarifications:
 
 15-04-2024: 
 
-1. In Question 6 part 1: the input param in the function histogram_kernel does nothing, it is present only to guarantee the same function signature as for the function kmer_kernel so that these can be both used interchangeably.
+1. In Question 6 part 1: the input param in the function histogram_kernel does nothing, 
+it is present only to guarantee the same function signature as for the function kmer_kernel 
+so that these can be both used interchangeably.
 
-2. When the object is a container for numerical values assume it is always a numpy array.  Predicted labels, targets, etc should all be numpy arrays.
+2. When the object is a container for numerical values assume it is always a numpy array.  
+Predicted labels, targets, etc should all be numpy arrays.
 
 
 
@@ -17,7 +20,11 @@ Clarifications:
 Amendments:
 
 
-15-04-2024: In question 7 the data type specification for input objects (indicated as X or X_test) is incorrect: the idea of using a kernel is that we can process any data type, provided that the kernel can be computed over that data type. So instead of 'X: feature matrix (numpy array or pandas DataFrame)' it should be: 'X: input data (of data type compatible with the kernel function)'. This means that it should be possible to pass numpy arrays if the kernel accepts arrays or sequences of strings if the kernel accepts sequences of strings. 
+15-04-2024: In question 7 the data type specification for input objects (indicated as X or X_test) is incorrect: 
+the idea of using a kernel is that we can process any data type, provided that the 
+kernel can be computed over that data type. So instead of 'X: feature matrix (numpy array or pandas DataFrame)' 
+it should be: 'X: input data (of data type compatible with the kernel function)'. This means that it should be 
+possible to pass numpy arrays if the kernel accepts arrays or sequences of strings if the kernel accepts sequences of strings. 
 
 13-04-2024: in Question 2 ignore the text in Notes.
 
