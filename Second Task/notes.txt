@@ -39,3 +39,15 @@ it should be
 compute_learning_curve(estimator, X, y, test_size, n_steps, n_repetitions)
 
 that is, pass an estimator rather the the separate train_func, test_func.
+
+
+__________________________________________________________________________________________________________________________________
+def histogram_vectorizer_old(seqs):
+    def vectotize_single_string(seq):
+        counter = dict.fromkeys(seq, 0) # Initializing the counter
+        for char in seq:
+            counter[char] += 1
+        histogram_vector = list(counter.values())
+        return histogram_vector
+    vectorized_seqs = [vectotize_single_string(seq) for seq in seqs]
+    return vectorized_seqs
