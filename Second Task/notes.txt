@@ -40,6 +40,20 @@ compute_learning_curve(estimator, X, y, test_size, n_steps, n_repetitions)
 
 that is, pass an estimator rather the the separate train_func, test_func.
 
+19-04-2024: 
+
+in Q7.3 it is correctly stated that: 
+"support_ids a boolean vector that indicates if a position is associated to a support vector 
+(w.r.t. the original data matrix) (i.e. if the first instance is a support vector and the second one it is not, then support_ids = [True, False])"
+
+this is the intended meaning of the vector 
+"support_ids" (the ids are implicit given the element position, 
+    i.e. if the 14th element is True then the 14th element in the training set is a support vector)
+
+
+The text in Q7.8 "support_ids: Indices of the support vectors in the original training data" 
+is possibly not clear, here we mean the same notion for support_ids as in Q7.3. 
+This is the same meaning that the vector 'is_support' has in Q8.
 
 __________________________________________________________________________________________________________________________________
 def histogram_vectorizer_old(seqs):
