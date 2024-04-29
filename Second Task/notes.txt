@@ -54,14 +54,3 @@ this is the intended meaning of the vector
 The text in Q7.8 "support_ids: Indices of the support vectors in the original training data" 
 is possibly not clear, here we mean the same notion for support_ids as in Q7.3. 
 This is the same meaning that the vector 'is_support' has in Q8.
-
-__________________________________________________________________________________________________________________________________
-def histogram_vectorizer_old(seqs):
-    def vectotize_single_string(seq):
-        counter = dict.fromkeys(seq, 0) # Initializing the counter
-        for char in seq:
-            counter[char] += 1
-        histogram_vector = list(counter.values())
-        return histogram_vector
-    vectorized_seqs = [vectotize_single_string(seq) for seq in seqs]
-    return vectorized_seqs
